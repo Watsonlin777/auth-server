@@ -1,0 +1,12 @@
+[AppStream]
+name=AppStream
+baseurl=https://mirrors.aliyun.com/centos/8.5.2111/AppStream/x86_64/os/
+enabled=1
+gpgcheck=0
+​
+[BaseOS]
+name=BaseOS
+baseurl=https://mirrors.aliyun.com/centos/8.5.2111/BaseOS/x86_64/os/
+enabled=1
+gpgcheck=0
+​

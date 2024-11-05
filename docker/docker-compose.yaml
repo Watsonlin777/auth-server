@@ -1,0 +1,49 @@
+version: '3'
+services:
+  authbase:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    image: authbase_image
+    container_name: authbase_container
+    restart: always
+    ports:
+      - "4403:80"
+    volumes:
+      - /opt/authbase:/opt/authbase
+    environment:
+      - TZ=Asia/Shanghai
+    command: sh docker-entrypoint.sh
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    container_name: mysql_container
+    hostname: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
+    ports:
+      - 4406:3306
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./conf/my.cnf:/etc/mysql/my.cnf
+    command:
+      --max_connections=1000
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --default-authentication-plugin=mysql_native_password
+    networks:
+      - hadoop-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent localhost:4406 >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+# 连接外部网络
+networks:
+  hadoop-network:
+    external: true
